@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.17.1">
+      <projectUrl>https://github.com/nfs-ganesha/nfs-ganesha/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.15">
+      <optOut>true</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>BOOTSTRAP_SCRIPT</name>
+          <description>Python script that reserves machines from Duffy and executes the provisioning and test scripts on them.</description>
+          <defaultValue>https://raw.githubusercontent.com/nixpanic/nfs-ganesha_ci-tests/run-cthon-gluster-volume/run-cthon-gluster-volume/bootstrap.py</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GANESHA_SETUP</name>
+          <description>Provisioning script for the NFS-Ganesha server.</description>
+          <defaultValue>https://raw.githubusercontent.com/nixpanic/nfs-ganesha_ci-tests/run-cthon-gluster-volume/run-cthon-gluster-volume/nfs-ganesha_setup.sh</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>NFS_CLIENT</name>
+          <description>Script that configures the client and runs the test.</description>
+          <defaultValue>https://raw.githubusercontent.com/nixpanic/nfs-ganesha_ci-tests/run-cthon-gluster-volume/run-cthon-gluster-volume/nfs-client.sh</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>GERRIT_HOST</name>
+          <description>Gerrit instance hosting the git repository.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>review.gerrithub.io</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>GERRIT_PROJECT</name>
+          <description>Gerrit project of the git repository.</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>ffilz/nfs-ganesha</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GERRIT_REFSPEC</name>
+          <description>For review number 12345 and patch set 6, add: &lt;br&gt;
+refs/changes/45/12345/6 &lt;br&gt;
+
+45 being last two digits of review number.</description>
+          <defaultValue>refs/heads/next</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>nfs-ganesha</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command># no need for verbose output
+# download and run the bootstrap script
+curl -o bootstrap.py ${BOOTSTRAP_SCRIPT}
+python bootstrap.py
+      </command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
