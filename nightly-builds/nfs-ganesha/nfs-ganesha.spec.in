@@ -43,7 +43,8 @@ Requires: sles-release >= 12
 %bcond_without xfs
 %global use_fsal_xfs %{on_off_switch xfs}
 
-%bcond_without ceph
+# disabled ceph, needs newer libcephfs1
+%bcond_with ceph
 %global use_fsal_ceph %{on_off_switch ceph}
 
 %bcond_with rgw
@@ -102,7 +103,9 @@ BuildRequires:	libcap-devel
 BuildRequires:	libblkid-devel
 BuildRequires:	libuuid-devel
 %if %{with system_ntirpc}
-BuildRequires:	libntirpc-devel >= 1.4.0
+# nightly builds of libntirpc are versioned like duplex13... and are < 1.4.0
+#BuildRequires:	libntirpc-devel >= 1.4.0
+BuildRequires:	pkgconfig(libntirpc) >= 1.4.0
 %endif
 Requires:	nfs-utils
 %if ( 0%{?fedora} ) || ( 0%{?rhel} && 0%{?rhel} >= 6 ) || ( 0%{?suse_version} )
