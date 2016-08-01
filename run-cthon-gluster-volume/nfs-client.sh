@@ -2,25 +2,30 @@
 #
 # Environment variables used:
 #  - NFS_SERVER
-#  - NFS_SHARE
-#  - LOGFILE
- 
+#  - EXPORT
+
+# if any command fails, the script should exit
 set -e
 
-#mount the share
-mkdir -p /mnt/
-mkdir -p /mnt/ganesh-mnt
-cd /mnt
-git clone git://fedorapeople.org/~steved/cthon04
-yum -y install time
+LOGFILE=/tmp/cthon04.log
+
+[ -n "${NFS_SERVER}" ]
+[ -n "${EXPORT}" ]
+
+# install build and runtime dependencies
+yum -y install git gcc nfs-utils time
+
+# checkout the connectathon tests
+git clone git://git.linux-nfs.org/projects/steved/cthon04.git
 cd cthon04
 make all
 
 # v3 mount
-mount -t nfs -o vers=3 ${NFS_SERVER}:/{NFS_SHARE} /mnt/ganesha-mnt
-./server -a  -p /${NFS_SHARE} -m /mnt/ganesha-mnt ${NFS_SERVER} | tee ${LOGFILE}
-
+mount -t nfs -o vers=3 ${NFS_SERVER}:/{EXPORT} /mnt
+./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee ${LOGFILE}
 
 # v4 mount
-mount -t nfs -o vers=4 ${NFS_SERVER}:/{NFS_SHARE} /mnt/ganesha-mnt
-./server -a  -p /${NFS_SHARE} -m /mnt/ganesha-mnt ${NFS_SERVER} | tee -a ${LOGFILE}
+mount -t nfs -o vers=4 ${NFS_SERVER}:/{EXPORT} /mnt
+./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee -a ${LOGFILE}
+
+# implicit exit status from the last command
