@@ -27,11 +27,11 @@ cd cthon04
 make all
 
 # v3 mount
-mount -t nfs -o vers=3 ${NFS_SERVER}:/{EXPORT} /mnt
+mount -t nfs -o vers=3 ${NFS_SERVER}:/${EXPORT} /mnt
 ./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee ${LOGFILE}
 
 # v4 mount
-mount -t nfs -o vers=4 ${NFS_SERVER}:/{EXPORT} /mnt
+mount -t nfs -o vers=4 ${NFS_SERVER}:/${EXPORT} /mnt
 ./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee -a ${LOGFILE}
 
 # implicit exit status from the last command
