@@ -9,6 +9,9 @@ set -e
 
 LOGFILE=/tmp/cthon04.log
 
+# TODO: pynfs Jenkins job actually hardcodes the export to "pynfs"
+EXPORT=pynfs
+
 # enable some more output
 set -x
 
