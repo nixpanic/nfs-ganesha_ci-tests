@@ -9,6 +9,9 @@ set -e
 
 LOGFILE=/tmp/cthon04.log
 
+# enable some more output
+set -x
+
 [ -n "${NFS_SERVER}" ]
 [ -n "${EXPORT}" ]
 
