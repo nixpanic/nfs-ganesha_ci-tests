@@ -29,12 +29,14 @@ set -e
 set -x
 
 # enable repositories
-yum -y install centos-release-gluster yum-utils
+yum -y install centos-release-gluster
 
 systemctl start rpcbind
 
 if [ -n "${YUM_REPO}" ]
 then
+	# for yum-config-manager
+	yum -y install yum-utils
 	yum-config-manager --add-repo=http://artifacts.ci.centos.org/nfs-ganesha/nightly/libntirpc/libntirpc-latest.repo
 	yum-config-manager --add-repo=http://artifacts.ci.centos.org/nfs-ganesha/nightly/nfs-ganesha-next.repo
 
@@ -71,7 +73,8 @@ else
 	cmake -DCMAKE_BUILD_TYPE=Maintainer ../src && make install
 	 
 	# start nfs-ganesha service
-	/usr/bin/ganesha.nfsd -L /var/log/ganesha.log -f /etc/ganesha/ganesha.conf -N NIV_EVENT
+	/usr/bin/ganesha.nfsd -L /var/log/ganesha.log \
+		-f /etc/ganesha/ganesha.conf -N NIV_EVENT
 fi
 
 # create and start gluster volume
