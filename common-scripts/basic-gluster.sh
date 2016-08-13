@@ -115,3 +115,19 @@ fi
 
 # wait till server comes out of grace period
 sleep 90
+
+# basic check if the export is available, some debugging if not
+if ! showmount -e | grep -q -w -e "${GLUSTER_VOLUME}"
+then
+	echo "+++ /var/log/ganesha.log +++"
+	cat /var/log/ganesha.log
+	echo
+	echo "+++ /etc/ganesha/ganesha.conf +++"
+	grep --with-filename  /etc/ganesha/ganesha.conf
+	echo
+	echo "+++ /etc/ganesha/exports/*.conf +++"
+	grep --with-filename /etc/ganesha/exports/*.conf
+	echo
+	echo "Export ${GLUSTER_VOLUME} is not available"
+	exit 1
+fi
