@@ -68,8 +68,7 @@ else:
 
 #publish='gerrit review --message "' + os.getenv("BUILD_URL") + 'consoleFull : ' + verdict + '" --project '+ os.getenv("GERRIT_PROJECT") + ' --notify=NONE ' +  os.getenv("GERRIT_PATCHSET_REVISION")
 #result_submit="ssh -l jenkins-glusterorg -i /home/nfs-ganesha/.ssh/gerrithub\@gluster.org -o StrictHostKeyChecking=no -p 29418 review.gerrithub.io '%s' " % (publish)
-
-rtn_submit=subprocess.call(result_submit, shell=True)
+#rtn_submit=subprocess.call(result_submit, shell=True)
 
 # return the system(s) to duffy
 done_nodes_url="%s/Node/done?key=%s&ssid=%s" % (url_base, api, b['ssid'])
