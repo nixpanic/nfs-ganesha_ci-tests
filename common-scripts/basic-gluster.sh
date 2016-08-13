@@ -3,8 +3,8 @@
 # Setup a simple gluster environment and export a volume through NFS-Ganesha.
 #
 # This script uses the following environment variables:
-# - VOLUME: name of the gluster volume to create
-#           this name will also be used as name for the export
+# - GLUSTER_VOLUME: name of the gluster volume to create
+#                   this name will also be used as name for the export
 #
 # The YUM_REPO and GERRIT_* variables are mutually exclusive.
 #
@@ -23,7 +23,7 @@
 # abort if anything fails
 set -e
 
-[ -n "${VOLUME}" ]
+[ -n "${GLUSTER_VOLUME}" ]
 
 # be a little bit more verbose
 set -x
@@ -79,12 +79,12 @@ fi
 
 # create and start gluster volume
 systemctl start glusterd
-mkdir -p /bricks/${VOLUME}
-gluster volume create ${VOLUME} \
+mkdir -p /bricks/${GLUSTER_VOLUME}
+gluster volume create ${GLUSTER_VOLUME} \
 	replica 2 \
-	$(hostname --fqdn):/bricks/${VOLUME}/b{1,2} force
+	$(hostname --fqdn):/bricks/${GLUSTER_VOLUME}/b{1,2} force
 
-gluster volume start ${VOLUME} force
+gluster volume start ${GLUSTER_VOLUME} force
 
 #disable gluster-nfs
 #gluster v set vol1 nfs.disable on
@@ -101,8 +101,8 @@ systemctl stop firewalld || service iptables stop
 setenforce 0
 
 # Export the volume
-/usr/libexec/ganesha/create-export-ganesha.sh /etc/ganesha ${VOLUME}
-/usr/libexec/ganesha/dbus-send.sh /etc/ganesha on ${VOLUME}
+/usr/libexec/ganesha/create-export-ganesha.sh /etc/ganesha ${GLUSTER_VOLUME}
+/usr/libexec/ganesha/dbus-send.sh /etc/ganesha on ${GLUSTER_VOLUME}
 
 # wait till server comes out of grace period
 sleep 90

@@ -1,21 +1,16 @@
 #!/bin/sh
 #
 # Environment variables used:
-#  - NFS_SERVER
-#  - EXPORT
+#  - SERVER: hostname or IP-address of the NFS-server
+#  - EXPORT: NFS-export to test (should start with "/")
 
 # if any command fails, the script should exit
 set -e
 
-LOGFILE=/tmp/cthon04.log
-
-# TODO: pynfs Jenkins job actually hardcodes the export to "pynfs"
-EXPORT=pynfs
-
 # enable some more output
 set -x
 
-[ -n "${NFS_SERVER}" ]
+[ -n "${SERVER}" ]
 [ -n "${EXPORT}" ]
 
 # install build and runtime dependencies
@@ -27,11 +22,13 @@ cd cthon04
 make all
 
 # v3 mount
-mount -t nfs -o vers=3 ${NFS_SERVER}:/${EXPORT} /mnt
-./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee ${LOGFILE}
+mkdir -p /mnt/nfsv3
+mount -t nfs -o vers=3 ${SERVER}:${EXPORT} /mnt/nfsv3
+./server -a -p ${EXPORT} -m /mnt/nfsv3 ${SERVER}
 
 # v4 mount
-mount -t nfs -o vers=4 ${NFS_SERVER}:/${EXPORT} /mnt
-./server -a  -p /${EXPORT} -m /mnt ${NFS_SERVER} | tee -a ${LOGFILE}
+mkdir -p /mnt/nfsv4
+mount -t nfs -o vers=4 ${SERVER}:${EXPORT} /mnt/nfsv4
+./server -a -p ${EXPORT} -m /mnt/nfsv4 ${SERVER}
 
 # implicit exit status from the last command

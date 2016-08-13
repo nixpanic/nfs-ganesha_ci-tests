@@ -1,3 +1,4 @@
+
 #
 # from: https://raw.githubusercontent.com/kbsingh/centos-ci-scripts/master/build_python_script.py
 #
@@ -14,14 +15,11 @@
 import json, urllib, subprocess, sys, os
 
 url_base="http://admin.ci.centos.org:8080"
-# we just build on CentOS-7/x86_64, CentOS-6 does not have 'mock'?
 ver=os.getenv("CENTOS_VERSION")
 arch=os.getenv("CENTOS_ARCH")
 count=2
-server_script_url=os.getenv("SERVER_TEST_SCRIPT")
-client_script_url=os.getenv("CLIENT_TEST_SCRIPT")
-pynfs_git_repo=os.getenv("PYNFS_GIT_REPO")
-pynfs_git_branch=os.getenv("PYNFS_GIT_BRANCH")
+server_script=os.getenv("SERVER_TEST_SCRIPT")
+client_script=os.getenv("CLIENT_TEST_SCRIPT")
 
 # read the API key for Duffy from the ~/duffy.key file
 fo=open("/home/nfs-ganesha/duffy.key")
@@ -35,20 +33,43 @@ get_nodes_url="%s/Node/get?key=%s&ver=%s&arch=%s&count=%s" % (url_base,api,ver,a
 dat=urllib.urlopen(get_nodes_url).read()
 b=json.loads(dat)
 
+# NFS-Ganesha Server
+server_env="GERRIT_HOST='%s'" % os.getenv("GERRIT_HOST")
+server_env+=" GERRIT_PROJECT='%s'" % os.getenv("GERRIT_PROJECT")
+server_env+=" GERRIT_REFSPEC='%s'" % os.getenv("GERRIT_REFSPEC")
+server_env+=" YUM_REPO='%s'" % os.getenv("YUM_REPO")
+server_env+=" GLUSTER_VOLUME='%s'" % os.getenv("EXPORT")
+
 cmd="""ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@%s '
 	yum -y install curl &&
-	curl -o build.sh %s &&
-	bash build.sh'
-""" % (b['hosts'][0], server_script_url)
+	curl %s | %s bash -
+'""" % (b['hosts'][0], server_script, server_env)
 rtn_code=subprocess.call(cmd, shell=True)
 
-if rtn_code == 0:
-    cmd="""ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@%s '
-        yum -y install curl &&
-        curl -o build.sh %s &&
-        NFS_SERVER="%s" PYNFS_GIT_REPO="%s" PYNFS_GIT_BRANCH="%s" bash build.sh'
-    """ % (b['hosts'][1], client_script_url, b['hosts'][0], pynfs_git_repo, pynfs_git_branch)
-    rtn_code=subprocess.call(cmd, shell=True)
+if rtn_code != "0":
+       verdict="SUCCESS"
+else:
+       verdict="FAILURE"
+
+# NFS-Client
+client_env="SERVER='%s'" % b['hosts'][0]
+client_env+=" EXPORT='/%s'" % os.getenv("GLUSTER_VOLUME")
+
+cmd="""ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@%s '
+	yum -y install curl nfs-utils &&
+	curl %s | %s bash -
+'""" % (b['hosts'][1], client_script, client_env)
+rtn_code=subprocess.call(cmd, shell=True)
+
+if rtn_code != "0":
+       verdict="SUCCESS"
+else:
+       verdict="FAILURE"
+
+#publish='gerrit review --message "' + os.getenv("BUILD_URL") + 'consoleFull : ' + verdict + '" --project '+ os.getenv("GERRIT_PROJECT") + ' --notify=NONE ' +  os.getenv("GERRIT_PATCHSET_REVISION")
+#result_submit="ssh -l jenkins-glusterorg -i /home/nfs-ganesha/.ssh/gerrithub\@gluster.org -o StrictHostKeyChecking=no -p 29418 review.gerrithub.io '%s' " % (publish)
+
+rtn_submit=subprocess.call(result_submit, shell=True)
 
 # return the system(s) to duffy
 done_nodes_url="%s/Node/done?key=%s&ssid=%s" % (url_base, api, b['ssid'])

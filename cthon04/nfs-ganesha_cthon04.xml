@@ -57,8 +57,8 @@
           <defaultValue>${GERRIT_REFSPEC}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GLUSTER_VOLUME</name>
-          <description>Name of the Gluster volume to create.</description>
+          <name>EXPORT</name>
+          <description>Name of the NFS-export to create.</description>
           <defaultValue>cthon04</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
