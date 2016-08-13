@@ -31,6 +31,8 @@ set -x
 # enable repositories
 yum -y install centos-release-gluster
 
+# make sure rpcbind is running
+yum -y install rpcbind
 systemctl start rpcbind
 
 if [ -n "${YUM_REPO}" ]
