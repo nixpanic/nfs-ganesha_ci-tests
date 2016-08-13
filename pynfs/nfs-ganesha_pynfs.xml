@@ -69,7 +69,7 @@
         <hudson.model.StringParameterDefinition>
           <name>EXPORT</name>
           <description>Name of the NFS-export to create.</description>
-          <defaultValue>cthon04</defaultValue>
+          <defaultValue>pynfs</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
           <name>CENTOS_VERSION</name>
