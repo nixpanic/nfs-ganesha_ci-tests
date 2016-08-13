@@ -53,7 +53,7 @@ else:
 
 # NFS-Client
 client_env="SERVER='%s'" % b['hosts'][0]
-client_env+=" EXPORT='/%s'" % os.getenv("GLUSTER_VOLUME")
+client_env+=" EXPORT='/%s'" % os.getenv("EXPORT")
 
 cmd="""ssh -t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@%s '
 	yum -y install curl nfs-utils &&
