@@ -72,6 +72,19 @@ YUM_REPO=http://artifacts.ci.centos.org/nfs-ganesha/nightly/nfs-ganesha-next.rep
           <triggerWithNoParameters>false</triggerWithNoParameters>
           <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
         </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+              <properties>CENTOS_VERSION=7
+CENTOS_ARCH=x86_64
+YUM_REPO=http://artifacts.ci.centos.org/nfs-ganesha/nightly/nfs-ganesha-next.repo</properties>
+            </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+          </configs>
+          <projects>nfs-ganesha_pynfs</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
       </configs>
     </hudson.plugins.parameterizedtrigger.TriggerBuilder>
   </builders>
