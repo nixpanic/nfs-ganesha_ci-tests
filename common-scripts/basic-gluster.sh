@@ -29,7 +29,7 @@ set -e
 set -x
 
 # enable repositories
-yum -y install centos-release-gluster
+yum -y install centos-release-gluster yum-utils
 
 # make sure rpcbind is running
 yum -y install rpcbind
@@ -37,8 +37,6 @@ systemctl start rpcbind
 
 if [ -n "${YUM_REPO}" ]
 then
-	# for yum-config-manager
-	yum -y install yum-utils
 	yum-config-manager --add-repo=http://artifacts.ci.centos.org/nfs-ganesha/nightly/libntirpc/libntirpc-latest.repo
 	yum-config-manager --add-repo=${YUM_REPO}
 
@@ -80,6 +78,7 @@ else
 fi
 
 # create and start gluster volume
+yum -y install glusterfs-server
 systemctl start glusterd
 mkdir -p /bricks/${GLUSTER_VOLUME}
 gluster volume create ${GLUSTER_VOLUME} \
@@ -103,6 +102,14 @@ systemctl stop firewalld || service iptables stop
 setenforce 0
 
 # Export the volume
+# These scripts get installed with glusterfs-ganesha, but that fails when
+# NFS-Ganesha is compiled from git (missing dependency on NFS-Ganesha).
+if ! rpm -q glusterfs-ganesha
+then
+	# force install of glusterfs-ganesha, even if there is no Ganesha RPM
+	yumdownloader glusterfs-ganesha
+	rpm -ivh --nodeps glusterfs-ganesha*.rpm
+fi
 /usr/libexec/ganesha/create-export-ganesha.sh /etc/ganesha ${GLUSTER_VOLUME}
 /usr/libexec/ganesha/dbus-send.sh /etc/ganesha on ${GLUSTER_VOLUME}
 
