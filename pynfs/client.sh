@@ -7,8 +7,6 @@
 # - run the NFSv4.0 tests
 #
 
-EXPORT=pynfs
-
 # bail out if there is an error
 set -e
 
@@ -16,20 +14,18 @@ set -e
 set -x
 
 # variables we expect
-[ -n "${NFS_SERVER}" ]
+[ -n "${SERVER}" ]
 [ -n "${EXPORT}" ]
-[ -n "${PYNFS_GIT_REPO}" ]
-[ -n "${PYNFS_GIT_BRANCH}" ]
 
 yum -y install git gcc nfs-utils redhat-rpm-config python-devel krb5-devel
 
 #install pynfs test suite
-git clone --branch ${PYNFS_GIT_BRANCH} ${PYNFS_GIT_REPO}
+git clone git://linux-nfs.org/~bfields/pynfs.git
 cd pynfs
 yes  | python setup.py build
 cd nfs4.0
 ./testserver.py \
-	${NFS_SERVER}:/${EXPORT} \
+	${SERVER}:${EXPORT} \
 	--verbose \
 	--maketree \
 	--showomit \

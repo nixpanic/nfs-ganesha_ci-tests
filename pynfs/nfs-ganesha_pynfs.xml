@@ -37,16 +37,6 @@
           <defaultValue>https://raw.githubusercontent.com/nfs-ganesha/ci-tests/centos-ci/pynfs/client.sh</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>PYNFS_GIT_REPO</name>
-          <description>The git repository with pynfs to checkout and run the tests with.</description>
-          <defaultValue>git://linux-nfs.org/~bfields/pynfs.git</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>PYNFS_GIT_BRANCH</name>
-          <description>The branch (can be anything 'git clone --branch ...' accepts) in the pynfs git repository to run the tests with.</description>
-          <defaultValue>master</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>YUM_REPO</name>
           <description>URL to the .repo file to use for installing NFS-Ganesha</description>
           <defaultValue></defaultValue>
