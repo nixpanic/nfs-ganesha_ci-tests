@@ -70,7 +70,7 @@ else
 	mkdir build
 	pushd build
 
-	cmake -DCMAKE_BUILD_TYPE=Maintainer ../src && make install
+	cmake -DCMAKE_BUILD_TYPE=Maintainer -DBUILD_CONFIG=everything ../src && make install
 
 	# start nfs-ganesha service
 	> /etc/ganesha/ganesha.conf
