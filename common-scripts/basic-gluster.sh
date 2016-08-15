@@ -73,6 +73,7 @@ else
 	cmake -DCMAKE_BUILD_TYPE=Maintainer ../src && make install
 
 	# start nfs-ganesha service
+	touch /etc/ganesha/ganesha.conf
 	/usr/bin/ganesha.nfsd -L /var/log/ganesha.log \
 		-f /etc/ganesha/ganesha.conf -N NIV_EVENT
 fi
