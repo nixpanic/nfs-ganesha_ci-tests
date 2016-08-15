@@ -73,7 +73,7 @@ else
 	cmake -DCMAKE_BUILD_TYPE=Maintainer ../src && make install
 
 	# start nfs-ganesha service
-	touch /etc/ganesha/ganesha.conf
+	> /etc/ganesha/ganesha.conf
 	/usr/bin/ganesha.nfsd -L /var/log/ganesha.log \
 		-f /etc/ganesha/ganesha.conf -N NIV_EVENT
 fi
@@ -124,10 +124,10 @@ then
 	cat /var/log/ganesha.log
 	echo
 	echo "+++ /etc/ganesha/ganesha.conf +++"
-	grep --with-filename  /etc/ganesha/ganesha.conf
+	grep --with-filename -e '' /etc/ganesha/ganesha.conf
 	echo
 	echo "+++ /etc/ganesha/exports/*.conf +++"
-	grep --with-filename /etc/ganesha/exports/*.conf
+	grep --with-filename -e '' /etc/ganesha/exports/*.conf
 	echo
 	echo "Export ${GLUSTER_VOLUME} is not available"
 	exit 1
