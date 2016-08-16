@@ -70,12 +70,16 @@ else
 	mkdir build
 	pushd build
 
-	cmake -DCMAKE_BUILD_TYPE=Maintainer -DBUILD_CONFIG=everything ../src && make install
+	cmake -DCMAKE_BUILD_TYPE=Maintainer -DBUILD_CONFIG=everything ../src
+	make dist
+	rpmbuild -ta --define "_srcrpmdir $PWD" --define "_rpmdir $PWD" *.tar.gz
+	rpm_version=$(rpm -q --qf '%{VERSION}-%{RELEASE}' -p *.src.rpm)
+	rpm_arch=$(rpm -E '%{_arch}')
+	yum -y install ${rpm_arch}/nfs-ganesha-{,gluster-}${rpm_version}.${rpm_arch}.rpm
 
-	# start nfs-ganesha service
+	# start nfs-ganesha service with an empty configuration
 	> /etc/ganesha/ganesha.conf
-	/usr/bin/ganesha.nfsd -L /var/log/ganesha.log \
-		-f /etc/ganesha/ganesha.conf -N NIV_EVENT
+	systemctl start nfs-ganesha
 fi
 
 # create and start gluster volume
