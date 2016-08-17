@@ -83,7 +83,7 @@ else
 fi
 
 # create and start gluster volume
-yum -y install glusterfs-server
+yum -y install glusterfs-server glusterfs-ganesha
 systemctl start glusterd
 mkdir -p /bricks/${GLUSTER_VOLUME}
 gluster volume create ${GLUSTER_VOLUME} \
@@ -107,14 +107,6 @@ systemctl stop firewalld || service iptables stop
 setenforce 0
 
 # Export the volume
-# These scripts get installed with glusterfs-ganesha, but that fails when
-# NFS-Ganesha is compiled from git (missing dependency on NFS-Ganesha).
-if ! rpm -q glusterfs-ganesha
-then
-	# force install of glusterfs-ganesha, even if there is no Ganesha RPM
-	yumdownloader glusterfs-ganesha
-	rpm -ivh --nodeps glusterfs-ganesha*.rpm
-fi
 /usr/libexec/ganesha/create-export-ganesha.sh /etc/ganesha ${GLUSTER_VOLUME}
 /usr/libexec/ganesha/dbus-send.sh /etc/ganesha on ${GLUSTER_VOLUME}
 
