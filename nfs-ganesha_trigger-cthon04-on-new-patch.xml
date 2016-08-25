@@ -11,15 +11,6 @@
     <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.17">
       <optOut>true</optOut>
     </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>GERRITHUB_USER</name>
-          <description>User (bot) account to post results to GerritHub.</description>
-          <defaultValue>rdo-ci-centos</defaultValue>
-        </hudson.model.StringParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.scm.NullSCM"/>
   <assignedNode>nfs-ganesha</assignedNode>
@@ -114,13 +105,6 @@ GERRIT_REFSPEC=${GERRIT_REFSPEC}</properties>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
-  <buildWrappers>
-    <com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper plugin="ssh-agent@1.10">
-      <credentialIds>
-        <string>${GERRITHUB_USER}</string>
-      </credentialIds>
-      <ignoreMissing>false</ignoreMissing>
-    </com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>
-  </buildWrappers>
+  <buildWrappers/>
   <pollSubjobs>false</pollSubjobs>
 </com.tikal.jenkins.plugins.multijob.MultiJobProject>
