@@ -44,7 +44,14 @@ then
 	yum -y install nfs-ganesha nfs-ganesha-gluster glusterfs-ganesha
 
 	# start nfs-ganesha service
-	systemctl start nfs-ganesha
+	if ! systemctl start nfs-ganesha
+	then
+		echo "+++ systemctl status nfs-ganesha.service +++"
+		systemctl status nfs-ganesha.service
+		echo "+++ journalctl -xe +++"
+		journalctl -xe
+		exit 1
+	fi
 else
 	[ -n "${GERRIT_HOST}" ]
 	[ -n "${GERRIT_PROJECT}" ]
@@ -83,7 +90,14 @@ else
 
 	# start nfs-ganesha service with an empty configuration
 	> /etc/ganesha/ganesha.conf
-	systemctl start nfs-ganesha
+	if ! systemctl start nfs-ganesha
+	then
+		echo "+++ systemctl status nfs-ganesha.service +++"
+		systemctl status nfs-ganesha.service
+		echo "+++ journalctl -xe +++"
+		journalctl -xe
+		exit 1
+	fi
 fi
 
 # create and start gluster volume
