@@ -35,6 +35,12 @@ yum -y install centos-release-gluster yum-utils
 yum -y install rpcbind
 systemctl start rpcbind
 
+# CentOS 7.4.1708 has an SELinux issue that prevents NFS-Ganesha from creating
+# the /var/log/ganesha/ganesha.log file. Starting ganesha.nfsd fails due to
+# this.
+echo 'TODO: this is BAD, needs a fix in the selinux-policy'
+setenforce 0
+
 if [ -n "${YUM_REPO}" ]
 then
 	yum-config-manager --add-repo=http://artifacts.ci.centos.org/nfs-ganesha/nightly/libntirpc/libntirpc-latest.repo
