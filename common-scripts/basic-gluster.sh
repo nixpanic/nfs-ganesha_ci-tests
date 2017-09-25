@@ -47,9 +47,11 @@ then
 	if ! systemctl start nfs-ganesha
 	then
 		echo "+++ systemctl status nfs-ganesha.service +++"
-		systemctl status nfs-ganesha.service
+	 	systemctl status nfs-ganesha.service || :
 		echo "+++ journalctl -xe +++"
-		journalctl -xe
+		journalctl -xe -u nfs-ganesha || :
+		echo "+++ /var/log/audit/audit.log +++"
+		cat /var/log/audit/audit.log
 		exit 1
 	fi
 else
@@ -93,9 +95,11 @@ else
 	if ! systemctl start nfs-ganesha
 	then
 		echo "+++ systemctl status nfs-ganesha.service +++"
-		systemctl status nfs-ganesha.service
+		systemctl status nfs-ganesha.service || :
 		echo "+++ journalctl -xe +++"
-		journalctl -xe
+		journalctl -xe -u nfs-ganesha || :
+		echo "+++ /var/log/audit/audit.log +++"
+		cat /var/log/audit/audit.log
 		exit 1
 	fi
 fi
