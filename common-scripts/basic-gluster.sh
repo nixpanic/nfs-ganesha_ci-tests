@@ -102,6 +102,15 @@ fi
 
 # create and start gluster volume
 yum -y install glusterfs-server glusterfs-ganesha
+
+# test for glusterfs-3.12.1-2 that fixes 'gluster volume create ... force'
+mkdir /var/tmp/glusterfs-3.12.1-2
+pushd /var/tmp/glusterfs-3.12.1-2
+yum -y install lftp
+lftp -e 'mget *.rpm ; exit' http://cbs.centos.org/kojifiles/work/tasks/102/230102/
+rpm -Fvh *.rpm
+popd
+
 systemctl start glusterd
 mkdir -p /bricks/${GLUSTER_VOLUME}
 gluster volume create ${GLUSTER_VOLUME} \
