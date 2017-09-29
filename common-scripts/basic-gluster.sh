@@ -107,7 +107,7 @@ else
 fi
 
 # create and start gluster volume
-yum -y install glusterfs-server glusterfs-ganesha
+yum -y install glusterfs-server
 systemctl start glusterd
 mkdir -p /bricks/${GLUSTER_VOLUME}
 gluster volume create ${GLUSTER_VOLUME} \
@@ -131,6 +131,13 @@ systemctl stop firewalld || service iptables stop
 setenforce 0
 
 # Export the volume
+mkdir -p /usr/libexec/ganesha
+cd /usr/libexec/ganesha
+yum -y install wget
+wget https://raw.githubusercontent.com/gluster/glusterfs/release-3.10/extras/ganesha/scripts/create-export-ganesha.sh
+wget https://raw.githubusercontent.com/gluster/glusterfs/release-3.10/extras/ganesha/scripts/dbus-send.sh
+chmod 755 create-export-ganesha.sh dbus-send.sh
+
 /usr/libexec/ganesha/create-export-ganesha.sh /etc/ganesha on ${GLUSTER_VOLUME}
 /usr/libexec/ganesha/dbus-send.sh /etc/ganesha on ${GLUSTER_VOLUME}
 
