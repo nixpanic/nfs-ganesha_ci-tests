@@ -12,33 +12,9 @@ GIT_REPO="https://${GERRIT_HOST}/${GERRIT_PROJECT}"
 
 # enable the Storage SIG Gluster repository
 yum -y install centos-release-gluster
+yum -y install centos-release-ceph
 
-# enable the ceph repository
-cat  > /etc/yum.repos.d/ceph-testing.repo <<-EOF
-[ceph]
-name=Ceph packages for \$basearch/\$releasever
-baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/\$basearch
-enabled=1
-priority=2
-gpgcheck=1
-gpgkey=https://download.ceph.com/keys/release.asc
 
-[ceph-noarch]
-name=Ceph noarch packages
-baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/noarch
-enabled=1
-priority=2
-gpgcheck=1
-gpgkey=https://download.ceph.com/keys/release.asc
-
-[ceph-source]
-name=Ceph source packages
-baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/SRPMS
-enabled=0
-priority=2
-gpgcheck=1
-gpgkey=https://download.ceph.com/keys/release.asc
-EOF
 
 # basic packages to install
 xargs yum -y install <<< "
@@ -58,6 +34,7 @@ libwbclient-devel
 redhat-rpm-config
 rpm-build
 glusterfs-api-devel
+libcephfs-devel
 "
 
 git clone ${GIT_REPO}
