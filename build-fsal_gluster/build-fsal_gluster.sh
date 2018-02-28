@@ -51,7 +51,7 @@ git submodule update --init || git submodule sync
 mkdir build
 cd build
 
-( cmake -DCMAKE_BUILD_TYPE=Maintainer ../src && make rpm ) || touch FAILED
+( cmake ../src -DCMAKE_BUILD_TYPE=Maintainer -DUSE_FSAL_RGW=ON && make rpm ) || touch FAILED
 
 # dont vote if the subject of the last change includes the word "WIP"
 if ( git log --oneline -1 | grep -q -i -w 'WIP' )
