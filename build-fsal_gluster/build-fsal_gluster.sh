@@ -17,7 +17,7 @@ yum -y install centos-release-gluster
 cat  > /etc/yum.repos.d/ceph-testing.repo <<-EOF
 [ceph]
 name=Ceph packages for \$basearch/\$releasever
-baseurl=https://download.ceph.com/rpm-testing/rhel${CENTOS_VERSION}/\$basearch
+baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/\$basearch
 enabled=1
 priority=2
 gpgcheck=1
@@ -25,7 +25,7 @@ gpgkey=https://download.ceph.com/keys/release.asc
 
 [ceph-noarch]
 name=Ceph noarch packages
-baseurl=https://download.ceph.com/rpm-testing/rhel${CENTOS_VERSION}/noarch
+baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/noarch
 enabled=1
 priority=2
 gpgcheck=1
@@ -33,7 +33,7 @@ gpgkey=https://download.ceph.com/keys/release.asc
 
 [ceph-source]
 name=Ceph source packages
-baseurl=https://download.ceph.com/rpm-testing/rhel${CENTOS_VERSION}/SRPMS
+baseurl=https://download.ceph.com/rpm-luminous/el${CENTOS_VERSION}/SRPMS
 enabled=0
 priority=2
 gpgcheck=1
