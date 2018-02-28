@@ -35,6 +35,7 @@ redhat-rpm-config
 rpm-build
 glusterfs-api-devel
 libcephfs-devel
+librgw-devel
 "
 
 git clone ${GIT_REPO}
