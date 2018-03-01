@@ -36,6 +36,7 @@ rpm-build
 glusterfs-api-devel
 libcephfs-devel
 librgw-devel
+xfsprogs-devel
 "
 
 git clone ${GIT_REPO}
