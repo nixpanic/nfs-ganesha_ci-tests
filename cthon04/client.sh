@@ -31,4 +31,9 @@ mkdir -p /mnt/nfsv4
 mount -t nfs -o vers=4 ${SERVER}:${EXPORT} /mnt/nfsv4
 ./server -a -p ${EXPORT} -m /mnt/nfsv4 ${SERVER}
 
+# v4.1 mount
+mkdir -p /mnt/nfsv41
+mount -t nfs -o vers=4.1 ${SERVER}:${EXPORT} /mnt/nfsv41
+./server -a -p ${EXPORT} -m /mnt/nfsv41 ${SERVER}
+
 # implicit exit status from the last command
