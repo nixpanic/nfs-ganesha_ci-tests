@@ -37,6 +37,7 @@ glusterfs-api-devel
 libcephfs-devel
 librgw-devel
 xfsprogs-devel
+python2-devel
 "
 
 git clone ${GIT_REPO}
