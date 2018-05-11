@@ -16,18 +16,18 @@ set -x
 [ -n "${EXPORT}" ]
 
 # install build and runtime dependencies
-echo "Install build and runtime dependencies"
-yum -y install git gcc nfs-utils time automake autoconf libtool popt-devel bison flex gtk2-devel libpcap-devel c-ares-devel libsmi-devel gnutls-devel libgcrypt-devel krb5-devel GeoIP-devel ortp-devel portaudio-devel
+echo "Install runtime dependencies"
+yum -y install nfs-utils
 
-# dbench download, install and make
-echo "dbench download, install and make"
-git clone git://git.samba.org/sahlberg/dbench.git dbench
-cd dbench
-./autogen.sh
-./configure
-make
-make install
-curl -o /usr/local/share/client.txt https://raw.githubusercontent.com/sahlberg/dbench/master/loadfiles/client.txt
+# dbench is available from the testing repositories in the CentOS Storage SIG
+yum -y install centos-release-gluster
+yum -y --enablerepo=centos-gluster*-test install dbench
+
+# place all used files in ${WORKDIR}
+WORKDIR=/var/tmp/dbench.d
+mkdir ${WORKDIR}
+
+curl -o ${WORKDIR}/client.txt https://raw.githubusercontent.com/sahlberg/dbench/master/loadfiles/client.txt
 
 
 # v3 mount
@@ -38,15 +38,15 @@ mount -t nfs -o vers=3 ${SERVER}:${EXPORT} /mnt/nfsv3
 echo "---------------------------------------"
 echo "dbench Test Running for v3 Mount..."
 echo "---------------------------------------"
-/root/dbench/dbench 2 > ../dbenchTestLog.txt
-tail -1 ../dbenchTestLog.txt | grep "Throughput" 
+dbench --loadfile=${WORKDIR}/client.txt 2 > ${WORKDIR}/dbenchTestLog.txt
+tail -1 ${WORKDIR}/dbenchTestLog.txt | grep "Throughput"
 status=$?
 if [ $status -eq 0 ]
 then
-      tail -21 ../dbenchTestLog.txt
+      tail -21 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: SUCCESS"
 else
-      tail -5 ../dbenchTestLog.txt
+      tail -5 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: FAILURE"
       exit $status
 fi
@@ -61,15 +61,15 @@ mount -t nfs -o vers=4.0 ${SERVER}:${EXPORT} /mnt/nfsv4
 echo "---------------------------------------"
 echo "dbench Test Running for v4.0 Mount..."
 echo "---------------------------------------"
-/root/dbench/dbench 2 > ../dbenchTestLog.txt
-tail -1 ../dbenchTestLog.txt | grep "Throughput" 
+dbench --loadfile=${WORKDIR}/client.txt 2 > ${WORKDIR}/dbenchTestLog.txt
+tail -1 ${WORKDIR}/dbenchTestLog.txt | grep "Throughput"
 status=$?
 if [ $status -eq 0 ]
 then
-      tail -21 ../dbenchTestLog.txt
+      tail -21 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: SUCCESS"
 else
-      tail -5 ../dbenchTestLog.txt
+      tail -5 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: FAILURE"
       exit $status
 fi
@@ -80,20 +80,19 @@ umount -l /mnt/nfsv4
 mkdir -p /mnt/nfsv4_1
 mount -t nfs -o vers=4.1 ${SERVER}:${EXPORT} /mnt/nfsv4_1
 
-
 # Running dbench suite on v4.1 mount
 echo "---------------------------------------"
 echo "dbench Test Running for v4.1 Mount..."
 echo "---------------------------------------"
-/root/dbench/dbench 2 > ../dbenchTestLog.txt
-tail -1 ../dbenchTestLog.txt | grep "Throughput" 
+dbench --loadfile=${WORKDIR}/client.txt 2 > ${WORKDIR}/dbenchTestLog.txt
+tail -1 ${WORKDIR}/dbenchTestLog.txt | grep "Throughput"
 status=$?
 if [ $status -eq 0 ]
 then
-      tail -21 ../dbenchTestLog.txt
+      tail -21 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: SUCCESS"
 else
-      tail -5 ../dbenchTestLog.txt
+      tail -5 ${WORKDIR}/dbenchTestLog.txt
       echo "dbench Test: FAILURE"
       exit $status
 fi
